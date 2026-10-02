@@ -1,0 +1,110 @@
+{
+  "env": {
+    "EDITOR": "hx",
+    "VISUAL": "zed",
+    "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "opus"
+  },
+  "attribution": {
+    "commit": "Authored-by: Adolfo Fuentes <adolfo_fuentes@outlook.com>",
+    "pr": "Authored-by: Adolfo Fuentes <adolfo_fuentes@outlook.com>"
+  },
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "WebFetch",
+      "WebSearch",
+      "Skill",
+      "mcp__codegraph__*",
+      "mcp__plugin_slack_slack__*",
+      "mcp__plugin_context7_context7__*",
+      "mcp__claude_ai_Context7__*"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "model": "opus",
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph prompt-hook"
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "aws-core@claude-plugins-official": true,
+    "aws-agents@claude-plugins-official": true,
+    "aws-data-analytics@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
+  "language": "Español",
+  "feedbackDrafts": "off",
+  "spinnerTipsEnabled": false,
+  "syntaxHighlightingDisabled": false,
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "low"
+    },
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "askUserQuestionTimeout": "never",
+  "dialogExpiry": "never",
+  "autoUpdatesChannel": "latest",
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "tap"
+  },
+  "timeFormat": "24-hour",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "editorMode": "normal",
+  "preferredNotifChannel": "auto",
+  "switchModelsOnFlag": false,
+  "fileCheckpointingEnabled": false,
+  "showTurnDuration": true,
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "pluginConfigs": {
+    "cc-plugin-agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-and-agents-md"
+      }
+    }
+  }
+}
