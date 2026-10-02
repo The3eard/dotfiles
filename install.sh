@@ -125,6 +125,10 @@ install_toolchains() {
 		info "Installing Claude Code"
 		curl -fsSL https://claude.ai/install.sh | bash
 	fi
+	local claude_bin
+	claude_bin="$(command -v claude || echo "$HOME/.local/bin/claude")"
+	"$claude_bin" mcp get codegraph >/dev/null 2>&1 ||
+		"$claude_bin" mcp add --scope user codegraph -- codegraph serve --mcp
 }
 
 set_default_shell() {
@@ -173,6 +177,19 @@ link_dotfiles() {
 	link config/gh/config.yml               "$HOME/.config/gh/config.yml"
 	link config/glab-cli/aliases.yml        "$HOME/.config/glab-cli/aliases.yml"
 	link scripts/aws-sso-login.sh           "$HOME/.scripts/aws-sso-login.sh"
+	link claude/CLAUDE.md                   "$HOME/.claude/CLAUDE.md"
+	link claude/statusline-command.sh       "$HOME/.claude/statusline-command.sh"
+	link claude/skills/dotfiles             "$HOME/.claude/skills/dotfiles"
+	local agent
+	for agent in "$DOTFILES"/claude/agents/*.md; do
+		link "claude/agents/$(basename "$agent")" "$HOME/.claude/agents/$(basename "$agent")"
+	done
+
+	# Claude Code rewrites settings.json from /config, so it is a starting copy, not a link.
+	if [[ ! -e "$HOME/.claude/settings.json" ]]; then
+		cp "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+		echo "  $HOME/.claude/settings.json ← claude/settings.json (copy)"
+	fi
 
 	if [[ ! -e "$HOME/.secrets" ]]; then
 		install -m 600 "$DOTFILES/secrets.example" "$HOME/.secrets"
