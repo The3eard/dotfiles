@@ -1,0 +1,32 @@
+theme = "transparent"   # custom: catppuccin_mocha colors with a transparent background (see ~/.config/helix/themes/transparent.toml)
+
+[editor]
+line-number = "absolute"      # absolute line numbers
+mouse = true                  # click, scroll, select with the mouse
+color-modes = true            # mode indicator changes color (normal/insert/select)
+bufferline = "multiple"       # show open files as tabs when >1 is open
+true-color = true
+auto-format = true            # format on save when a formatter is available
+
+[editor.cursor-shape]
+insert = "bar"                # thin bar in insert mode, block in normal — easy to tell apart
+normal = "block"
+select = "underline"
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-modification-indicator"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
+
+[editor.lsp]
+display-messages = true       # show LSP status messages
+display-inlay-hints = true    # inline type hints
+
+[editor.file-picker]
+hidden = false                # show hidden files in the file picker (Space + f)
+
+[editor.indent-guides]
+render = true                 # faint vertical guides for indentation
+character = "┊"
+
+[editor.soft-wrap]
+enable = true                 # wrap long lines instead of scrolling sideways
