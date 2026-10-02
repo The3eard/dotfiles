@@ -1,0 +1,618 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║                              ZSH CONFIGURATION                               ║
+# ║                                                                              ║
+# ║  Sections:                                                                   ║
+# ║    1. Dependencies          — what to install on a new machine               ║
+# ║    2. Shell core            — options, history, completion, key bindings     ║
+# ║    3. Environment           — editors, PATH, exports                         ║
+# ║    4. Aliases               — shortcuts organized by category                ║
+# ║    5. FZF                   — fuzzy finder configuration and functions       ║
+# ║    6. External plugins      — syntax highlighting, autosuggestions, etc.     ║
+# ║    7. Initializations       — tools that must load last (starship, zoxide)   ║
+# ║    8. fnm + SDKMAN          — quiet auto-switch                              ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 1. DEPENDENCIES
+# ══════════════════════════════════════════════════════════════════════════════
+# install.sh in the dotfiles repo runs all of this on macOS and Linux (Linux
+# gets the same CLI tools through Homebrew on Linux). The manual equivalents
+# below document what it does. Without them, aliases and plugins will break.
+#
+# ── 1.0 Prerequisites ────────────────────────────────────────────────────────
+# Required before anything else in this section will work.
+#   xcode-select --install                         # Xcode CLT — provides git, compilers
+#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"  # Homebrew
+#
+# ── 1.1 Core CLI tools ───────────────────────────────────────────────────────
+#   brew install eza fd ripgrep bat fzf zoxide tldr difftastic starship
+#   brew install sevenzip                          # provides 7zz (used by '7z' alias)
+#   brew install mysql-client                      # mysql CLI (added to PATH)
+#   brew install fnm                               # Node version manager (section 8)
+#   fnm install 20.19.5 && fnm default 20.19.5     # Node used outside projects
+#
+# ── 1.2 ZSH plugins (Homebrew) ───────────────────────────────────────────────
+#   brew install zsh-fast-syntax-highlighting zsh-autosuggestions zsh-ai
+#
+# ── 1.3 Vendored plugins ─────────────────────────────────────────────────────
+# Single files copied from Oh My Zsh (no framework). Re-run to update.
+#   mkdir -p ~/.config/zsh/plugins
+#   curl -fsSLo ~/.config/zsh/plugins/sudo.plugin.zsh \
+#     https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
+#
+# ── 1.4 Fonts & themes ───────────────────────────────────────────────────────
+# A Nerd Font is REQUIRED for icons in eza, starship, fzf, and the version
+# auto-switch hook (section 8). Install one and set it in your terminal:
+#   brew install --cask font-jetbrains-mono-nerd-font
+#
+# bat needs no theme install: ~/.config/bat/config selects OneHalfLight /
+# OneHalfDark from macOS appearance via --theme=auto:system, and both ship
+# with bat. Do NOT set BAT_THEME — the env var overrides that config file.
+#
+# ── 1.5 Optional / project-specific ──────────────────────────────────────────
+#   curl -s "https://get.sdkman.io" | bash         # Java/Tomcat version manager
+#   brew install awscli                            # AWS CLI (completion in 2.3 + 'creds' alias)
+#   brew install --cask docker                     # Docker Desktop
+#   brew install --cask ghostty                    # terminal (CSI u keybinds in 5.4.1)
+#   brew install --cask zed                         # GUI editor ($VISUAL)
+#     then symlink its CLI onto PATH so `zed`/`zed --wait` work:
+#       ln -sf "/Applications/Zed.app/Contents/MacOS/cli" ~/.local/bin/zed
+#   npm install -g @anthropic-ai/claude-code       # Claude Code CLI (cc / ccy aliases)
+#
+# ── 1.6 Required files ───────────────────────────────────────────────────────
+#   ~/.secrets             — API keys and tokens (not version-controlled). Vars:
+#                              export GEMINI_API_KEY="..."    # zsh-ai (sec. 3.6)
+#                              export ANTHROPIC_API_KEY="..." # optional, Claude
+#                              (plus any project-specific tokens)
+#   ~/.gitconfig           — configures difftastic as the diff tool
+#                            (e.g. `git dft` → structural syntax diff)
+#   ~/.config/starship.toml — starship prompt config (referenced in section 7.3)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 2. SHELL CORE
+# ══════════════════════════════════════════════════════════════════════════════
+# Plain zsh, no framework: only the defaults this setup relies on. Startup
+# cost matters here — every line runs on each new tab.
+
+# ── 2.1 Options ──────────────────────────────────────────────────────────────
+setopt auto_cd                # type a directory name alone to cd into it
+setopt auto_pushd             # cd pushes the old dir on the stack (cd -<Tab> lists it)
+setopt pushd_ignore_dups      # no duplicate entries in that stack
+setopt pushd_minus            # cd -1 is the most recent dir, not the oldest
+setopt interactive_comments   # allow # comments on the command line
+setopt long_list_jobs         # job notifications include the PID
+unsetopt flow_control         # frees Ctrl+S / Ctrl+Q from pausing output
+WORDCHARS=''                  # word motions (Ctrl+W, Ctrl+←/→) stop at / . - _ inside paths
+
+# ── 2.2 History ──────────────────────────────────────────────────────────────
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000                # entries kept in memory
+SAVEHIST=10000                # entries kept in HISTFILE
+setopt extended_history       # store a timestamp with each entry
+setopt hist_expire_dups_first # when trimming, drop duplicates first
+setopt hist_ignore_dups       # don't store a command identical to the previous one
+setopt hist_ignore_space      # a leading space keeps a command out of history
+setopt hist_verify            # !! and friends expand into the line instead of running
+setopt share_history          # every open shell reads and appends the same history
+
+# ── 2.3 Completion ───────────────────────────────────────────────────────────
+# Homebrew lives in /opt/homebrew on macOS and /home/linuxbrew/.linuxbrew on
+# Linux. Detected with a directory test instead of `brew shellenv`, which forks.
+if [[ -d /opt/homebrew ]]; then
+  export HOMEBREW_PREFIX=/opt/homebrew
+elif [[ -d /home/linuxbrew/.linuxbrew ]]; then
+  export HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+fi
+
+# Homebrew formulae (fnm, gh, …) install completions into site-functions;
+# the system zsh does not search it by default.
+fpath=($HOMEBREW_PREFIX/share/zsh/site-functions $HOME/.docker/completions $fpath)
+
+zmodload zsh/complist         # menu-select widget used below
+autoload -Uz compinit bashcompinit
+compinit
+bashcompinit                  # accepts bash `complete` specs (aws below, SDKMAN in 7.1)
+complete -C aws_completer aws
+
+setopt complete_in_word       # complete from the cursor, not only at the end of the word
+setopt always_to_end          # move the cursor after the completed word
+zstyle ':completion:*' menu select                   # arrow-key navigable menu
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'  # case-insensitive, then substring
+zstyle ':completion:*' special-dirs true             # complete . and ..
+zstyle ':completion:*' list-colors ''                # default colours in the menu
+zstyle ':completion:*' use-cache yes                 # cache slow completers (brew, docker)
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh/zcompcache"
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+
+# ── 2.4 Key bindings ─────────────────────────────────────────────────────────
+# Emacs keymap explicitly: zsh picks vi mode when $EDITOR or $VISUAL contains "vi".
+# Each cursor key is bound in both forms a terminal can send (CSI `^[[` and SS3 `^[O`).
+bindkey -e
+
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search    # ↑ — previous command starting with what is typed
+bindkey '^[OA' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search  # ↓ — next one
+bindkey '^[OB' down-line-or-beginning-search
+
+bindkey '^[[H' beginning-of-line              # Home
+bindkey '^[OH' beginning-of-line
+bindkey '^[[F' end-of-line                    # End
+bindkey '^[OF' end-of-line
+bindkey '^[[3~' delete-char                   # Delete (forward)
+bindkey '^[[1;5C' forward-word                # Ctrl+→
+bindkey '^[[1;5D' backward-word               # Ctrl+←
+bindkey '^[[Z' reverse-menu-complete          # Shift+Tab — previous completion entry
+bindkey ' ' magic-space                       # expand !! / !$ when Space is typed
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line              # Ctrl+X Ctrl+E — edit the line in $VISUAL
+
+# Pasted URLs get their ? & * quoted automatically.
+autoload -Uz bracketed-paste-magic url-quote-magic
+zle -N bracketed-paste bracketed-paste-magic
+zle -N self-insert url-quote-magic
+
+# ── 2.5 Vendored plugins ─────────────────────────────────────────────────────
+# Esc Esc prepends sudo to the current line (or to the previous command if the
+# line is empty); on an $EDITOR command it switches to `sudo -e`. Source: 1.3.
+source "$HOME/.config/zsh/plugins/sudo.plugin.zsh"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 3. ENVIRONMENT
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── 3.1 Editors ───────────────────────────────────────────────────────────────
+export EDITOR="hx"                        # terminal editor (git commit, crontab, etc.)
+export VISUAL="zed --wait"                # GUI editor (Zed); --wait blocks until the file is closed
+
+# ── 3.2 PATH ─────────────────────────────────────────────────────────────────
+export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"  # brew before /usr/bin
+export PATH="$HOME/.local/bin:$PATH"            # user scripts and tools
+export PATH="$HOMEBREW_PREFIX/opt/mysql-client/bin:$PATH"  # mysql-client CLI
+
+# ── 3.3 Theming ──────────────────────────────────────────────────────────────
+# No BAT_THEME here on purpose: it would override ~/.config/bat/config, which
+# already picks OneHalfLight/OneHalfDark from macOS appearance (--theme=auto:system).
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"  # bat as man page viewer
+export LESS='-R'                          # less shows ANSI colours instead of raw escape codes
+
+# ── 3.4 SDKMAN (Java toolchain) ──────────────────────────────────────────────
+export SDKMAN_DIR="$HOME/.sdkman"
+export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+export CATALINA_HOME="$HOME/.sdkman/candidates/tomcat/current"
+
+# ── 3.5 Claude Code ──────────────────────────────────────────────────────────
+export ENABLE_LSP_TOOL=1
+
+# ── 3.6 ZSH-AI plugin ────────────────────────────────────────────────────────
+export ZSH_AI_PROVIDER="gemini"
+
+# ── 3.6b Shell behavior ──────────────────────────────────────────────────────
+PROMPT_EOL_MARK=''                        # hide the % marker on output with no trailing newline
+# Sube el nivel de log de starship a ERROR para silenciar sus WARN. El que salía
+# era "Executing command … timed out" del módulo nodejs: tras un cambio de versión
+# el binario de node (~132 MB) puede tardar >1s en su primer exec en frío y se pasa
+# del command_timeout de starship.toml (§ver starship.toml:9). Es cosmético — solo
+# se pierde la versión de node en ese prompt y el siguiente ya sale bien.
+# Contrapartida: los errores de config inválida en ~/.config/starship.toml también
+# se emiten como WARN (comprobado: "Unknown key"), así que quedan ocultos.
+export STARSHIP_LOG=error
+
+# ── 3.7 Secrets (API keys, tokens) ───────────────────────────────────────────
+# Loaded from a separate file that is NOT version-controlled.
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 4. ALIASES
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── 4.1 File listing (eza replaces ls) ────────────────────────────────────────
+alias l='eza --icons'                     # compact listing with icons
+alias ls='eza --icons'                    # default ls replacement
+alias ll='eza -la --icons --git'          # detailed listing with git status
+alias lt='eza --tree --icons --level=2'   # tree view (2 levels deep)
+alias lta='eza --tree --icons -a --level=2'  # tree view including hidden files
+
+# ── 4.2 File viewing & editing (bat + helix) ─────────────────────────────────
+alias cat='bat'                           # syntax-highlighted cat with line numbers
+alias vi='hx'                             # always use helix
+alias vim='hx'                            # always use helix
+alias editor='hx'                         # quick access to helix
+
+# ── 4.3 Navigation ───────────────────────────────────────────────────────────
+alias ..='cd ..'                          # go up one level
+alias ...='cd ../..'                      # go up two levels
+alias ....='cd ../../..'                  # go up three levels
+alias -- -='cd -'                         # back to the previous directory
+
+# ── 4.4 Shell utilities ──────────────────────────────────────────────────────
+alias cl='clear'                          # clear terminal
+alias q='exit'                            # quick exit
+alias reload='source ~/.zshrc'            # reload this config without restarting
+alias help='tldr'                         # quick cheatsheets (usage: help tar)
+alias grep='grep --color=auto --exclude-dir={.git,.idea}'  # coloured matches, skip VCS/IDE dirs
+alias update='brew update && brew upgrade --greedy && brew autoremove'  # update all Homebrew packages
+
+# ── 4.5 Network & system info ────────────────────────────────────────────────
+alias ports='lsof -iTCP -sTCP:LISTEN -nP' # list all listening TCP ports
+alias ip='curl -s ifconfig.me'            # public IP address
+alias weather='curl -s wttr.in/?format=3' # quick weather for current location
+alias path='echo $PATH | tr ":" "\n"'     # print PATH entries one per line
+alias sizeof='du -sh'                     # show size of file/dir (usage: sizeof ./folder)
+
+# ── 4.6 AWS ──────────────────────────────────────────────────────────────────
+# ~/.scripts/aws-sso-login.sh comes from the dotfiles repo; its account IDs and
+# SSO URL are read from ~/.secrets (AWS_SSO_* vars).
+# Usage: creds [-e dev|prod]   (default: dev)
+alias creds='~/.scripts/aws-sso-login.sh' # refresh AWS SSO credentials
+
+# ── 4.7 Claude ───────────────────────────────────────────────────────────
+alias ck='claude --agent kojima'          # launch Claude Code with the kojima orchestrator (~/.claude/agents)
+alias cky='claude --agent kojima --dangerously-skip-permissions' # kojima orchestrator with all permissions
+alias cc='claude'
+alias ccy='claude --dangerously-skip-permissions'  # plain Claude Code with all permissions
+
+# ── 4.8 7zip ────────────────────────────────────────────────────────────────
+alias 7z='7zz'  # use 7zz (the newer, faster version of 7z) for all archive operations
+
+# -- 4.9 Python -------------------------------------------------------------
+alias py='python3'
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 5. FZF (Fuzzy Finder)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── 5.1 Default behavior ─────────────────────────────────────────────────────
+# Uses fd instead of find for speed. Respects .gitignore, includes hidden files.
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+
+# ── 5.2 Appearance (follows the terminal theme) ───────────────────────────────
+# ANSI slot numbers and -1, not hex: -1 means "terminal default", so the picker
+# inherits the terminal background instead of painting its own, and follows the
+# Ghostty theme in both modes. Previously this hardcoded Catppuccin Mocha hex
+# including bg:#101010, which stayed a dark box inside a light terminal.
+#   bg+ keeps a real slot (8) — as a background band a low ratio is what you want,
+#   and -1 there would leave the selected row with no highlight at all.
+#   border uses -1 rather than a slot: no slot is mid-tone in both modes (slot 8
+#   is 1.77:1 on Apple System Colors dark, slot 7 is 2.87:1 on its Light variant).
+export FZF_DEFAULT_OPTS='
+  --height=60%
+  --layout=reverse
+  --border
+  --info=inline
+  --preview-window=right:50%:wrap
+  --color=fg:-1,bg:-1,hl:4
+  --color=fg+:-1,bg+:8,hl+:4
+  --color=info:2,prompt:4,pointer:5
+  --color=marker:1,spinner:5,header:6
+  --color=border:-1
+'
+
+# ── 5.3 Key binding overrides ────────────────────────────────────────────────
+# Ctrl+T — insert file path (with bat preview)
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:300 {}'"
+
+# Alt+C — cd into directory (with eza tree preview)
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+export FZF_ALT_C_OPTS="--preview 'eza --tree --icons --level=2 --color=always {}'"
+
+# ── 5.4 Load fzf key bindings and completions ────────────────────────────────
+source <(fzf --zsh)
+
+# ── 5.4.1 CSI u (kitty protocol) keybindings for Ghostty ────────────────────
+# Ghostty sends CSI u sequences (e.g. \e[114;5u for Ctrl+R) instead of classic
+# control codes. Bind these so fzf and other widgets work correctly.
+bindkey '\e[114;5u' fzf-history-widget    # Ctrl+R → fzf history
+bindkey '\e[116;5u' fzf-file-widget       # Ctrl+T → fzf file finder
+
+# ── 5.5 Interactive finder functions ──────────────────────────────────────────
+
+# ff — fuzzy find a file and open it in $EDITOR
+ff() {
+  local file
+  file=$(fd --type f --hidden --follow --exclude .git | fzf --preview 'bat --color=always --style=numbers --line-range=:300 {}')
+  [ -n "$file" ] && ${EDITOR:-hx} "$file"
+}
+
+# fdd — fuzzy find a directory and cd into it
+fdd() {
+  local dir
+  dir=$(fd --type d --hidden --follow --exclude .git | fzf --preview 'eza --tree --icons --level=2 --color=always {}')
+  [ -n "$dir" ] && cd "$dir"
+}
+
+# rgi — interactive ripgrep: search content → preview with bat → open in $EDITOR
+rgi() {
+  local selection
+  selection=$(rg --color=always --line-number --no-heading "${1:-.}" |
+    fzf --ansi --delimiter=: \
+        --preview 'bat --color=always --highlight-line {2} --line-range=$(( {2} > 10 ? {2} - 10 : 1 )):$(( {2} + 10 )) {1}' \
+        --preview-window='right:50%:wrap')
+  [ -n "$selection" ] && ${EDITOR:-hx} "$(echo "$selection" | cut -d: -f1)" "+$(echo "$selection" | cut -d: -f2)"
+}
+
+# fkill — fuzzy find a process and kill it (default signal: SIGKILL)
+fkill() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf --header='Select process to kill' | awk '{print $2}')
+  [ -n "$pid" ] && kill -${1:-9} "$pid"
+}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 6. EXTERNAL PLUGINS
+# ══════════════════════════════════════════════════════════════════════════════
+# Loaded after section 2: they wrap the ZLE widgets and completion set up there.
+
+# ── 6.1 Syntax highlighting ──────────────────────────────────────────────────
+# Colors valid/invalid commands as you type (green = valid, red = not found).
+# fast-syntax-highlighting rather than zsh-syntax-highlighting: it stays
+# responsive on long lines and big pastes.
+source $HOMEBREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# ── 6.2 Autosuggestions ──────────────────────────────────────────────────────
+# Suggests commands from history in gray text. Accept with → (right arrow).
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# ── 6.3 ZSH-AI ───────────────────────────────────────────────────────────────
+# AI-powered command suggestions. Provider configured in section 3.6.
+source $HOMEBREW_PREFIX/share/zsh-ai/zsh-ai.plugin.zsh
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 7. INITIALIZATIONS (must be last)
+# ══════════════════════════════════════════════════════════════════════════════
+# These tools modify the prompt or hook into cd — they must load after
+# everything else to work correctly.
+
+# ── 7.1 SDKMAN ───────────────────────────────────────────────────────────────
+# Manages Java, Maven, Tomcat versions. Must be near the end per SDKMAN docs.
+[ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+# ── 7.2 Zoxide (smarter cd) ──────────────────────────────────────────────────
+# Replaces the z plugin. Learns directories you visit.
+# Usage: z <partial-dir-name>, zi (interactive with fzf)
+eval "$(zoxide init zsh)"
+
+# ── 7.3 Starship prompt (MUST be last) ───────────────────────────────────────
+# Cross-shell prompt with git info, language versions, etc.
+# Config: ~/.config/starship.toml
+eval "$(starship init zsh)"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 8. FNM + SDKMAN — QUIET AUTO-SWITCH
+# ══════════════════════════════════════════════════════════════════════════════
+# Node.js comes from fnm (driven by .nvmrc), Java/Maven/Tomcat from SDKMAN
+# (driven by .sdkmanrc). Neither tool's own cd hook is on — no --use-on-cd
+# below, and sdkman_auto_env=false in ~/.sdkman/etc/config — because the hook
+# in 8.2 replaces both with one quiet summary line.
+
+# ── 8.1 Load fnm ─────────────────────────────────────────────────────────────
+# Puts a per-shell Node symlink on PATH, so `fnm use` switches only this shell.
+# Versions live in ~/.local/share/fnm; `fnm default` is the one used outside
+# projects. Global npm packages are per version, as with any Node manager.
+eval "$(fnm env --shell zsh)"
+
+# Prints the nearest .nvmrc from $1 (default $PWD) up to /; fails if none.
+_find_nvmrc() {
+  local dir="${1:-$PWD}"
+  while true; do
+    [[ -f "$dir/.nvmrc" ]] && { print -r -- "$dir/.nvmrc"; return 0; }
+    [[ "$dir" == / ]] && return 1
+    dir="${dir:h}"
+  done
+}
+
+# ── 8.2 Quiet version switch on cd / git checkout (SDKMAN + fnm) ─────────────
+# Instead of 5+ noisy lines, prints one styled line with Nerd Font icons
+# and actual version numbers.
+#
+# Triggers:
+#   1. chpwd  — when you cd into a project directory.
+#   2. precmd — only after running a git command that may rewrite tracked
+#               files (checkout, switch, pull, merge, rebase, reset, stash,
+#               cherry-pick, restore, am, clone). A `preexec` hook sets a
+#               flag for those; for everything else `precmd` is a no-op
+#               (single integer test), so prompts stay fast.
+autoload -U add-zsh-hook
+zmodload -F zsh/stat b:zstat    # portable mtime: BSD and GNU `stat` take different flags
+typeset -g _versions_recheck=0
+typeset -gA _versions_seen      # PWD → "<sdkmanrc_mtime>|<nvmrc_mtime>|<active node>|<PATH>"
+
+_auto_switch_versions() {
+  # Only activate inside ~/Projects
+  [[ "$PWD" != "$HOME/Projects"* ]] && return
+
+  # Fast exit: if no .sdkmanrc here and no .nvmrc anywhere up the tree,
+  # there is nothing to manage — bail before doing any other work.
+  local has_sdkrc=0 nvmrc_path=""
+  [[ -f .sdkmanrc ]] && has_sdkrc=1
+  nvmrc_path="$(_find_nvmrc)"
+  (( has_sdkrc )) || [[ -n "$nvmrc_path" ]] || return
+
+  # Skip the rest when nothing changed since the last visit to this PWD:
+  # same version-file mtimes AND the shell still on the versions that visit
+  # left it on. Covers repeat cds and git operations that didn't touch the
+  # version files. The active-version half is what makes returning from
+  # another project switch back: the active Node is read from fnm's per-shell
+  # symlink (no fork), and SDKMAN's choice lives in PATH, which `sdk env`
+  # rewrites.
+  local sdk_m="" nvm_m=""
+  (( has_sdkrc ))         && sdk_m=$(zstat +mtime -- .sdkmanrc     2>/dev/null)
+  [[ -n "$nvmrc_path" ]]  && nvm_m=$(zstat +mtime -- "$nvmrc_path" 2>/dev/null)
+  [[ "${_versions_seen[$PWD]:-}" == "$sdk_m|$nvm_m|${FNM_MULTISHELL_PATH:A}|$PATH" ]] && return
+
+  # Nerd Font icons — same codepoints as starship.toml where possible
+  local nf_java=$'\ue256'       # nf-fae-java (same as starship [java])
+  local nf_maven='mvn'          # plain text, no nerd font icon for maven
+  local nf_tomcat='tomcat'      # plain text
+  local nf_node=$'\ue718'       # nf-dev-nodejs_small (same as starship [nodejs])
+
+  local parts=()
+
+  # SDKMAN: parse .sdkmanrc once, then either switch silently (if every
+  # requested candidate is already installed) or warn the user (don't
+  # auto-install — `sdk env install` can take minutes downloading).
+  local sdk_missing=()
+  if (( has_sdkrc )); then
+    local java_ver="" maven_ver="" tomcat_ver="" key value
+    while IFS='=' read -r key value; do
+      [[ -z "$key" || "$key" = \#* ]] && continue
+      case "$key" in
+        java)   java_ver="$value" ;;
+        maven)  maven_ver="$value" ;;
+        tomcat) tomcat_ver="$value" ;;
+      esac
+    done < .sdkmanrc
+
+    # Check installed-ness via the candidate's install dir.
+    [[ -n "$java_ver"   && ! -d "$SDKMAN_DIR/candidates/java/$java_ver"     ]] && sdk_missing+=("java $java_ver")
+    [[ -n "$maven_ver"  && ! -d "$SDKMAN_DIR/candidates/maven/$maven_ver"   ]] && sdk_missing+=("maven $maven_ver")
+    [[ -n "$tomcat_ver" && ! -d "$SDKMAN_DIR/candidates/tomcat/$tomcat_ver" ]] && sdk_missing+=("tomcat $tomcat_ver")
+
+    if (( ${#sdk_missing[@]} == 0 )); then
+      # Check if a switch is actually needed before invoking SDKMAN.
+      # IMPORTANT: compare against the version active in THIS shell's PATH,
+      # not the global `current` symlink. Another shell may have done
+      # `sdk use <cand> <ver>` (which pins the absolute path in its own PATH
+      # without moving the symlink), or this shell may have a pinned path
+      # while the symlink was moved elsewhere — relying on the symlink would
+      # falsely conclude "nothing to do" and leave this session on the wrong
+      # version.
+      _active_sdk_version() {
+        # $1 = candidate name (java|maven|tomcat). Echoes the version
+        # currently in effect for this shell, resolving `current` via readlink.
+        local cand="$1" p ver
+        for p in ${(s/:/)PATH}; do
+          if [[ "$p" == "$SDKMAN_DIR/candidates/$cand/"*"/bin" ]]; then
+            ver="${${p#$SDKMAN_DIR/candidates/$cand/}%/bin}"
+            if [[ "$ver" == "current" ]]; then
+              ver="${$(readlink "$SDKMAN_DIR/candidates/$cand/current" 2>/dev/null):t}"
+            fi
+            print -r -- "$ver"
+            return
+          fi
+        done
+      }
+      local need_sdk=0 cur
+      if [[ -n "$java_ver" ]]; then
+        cur="$(_active_sdk_version java)"
+        [[ "$cur" != "$java_ver" ]] && need_sdk=1
+      fi
+      if (( ! need_sdk )) && [[ -n "$maven_ver" ]]; then
+        cur="$(_active_sdk_version maven)"
+        [[ "$cur" != "$maven_ver" ]] && need_sdk=1
+      fi
+      if (( ! need_sdk )) && [[ -n "$tomcat_ver" ]]; then
+        cur="$(_active_sdk_version tomcat)"
+        [[ "$cur" != "$tomcat_ver" ]] && need_sdk=1
+      fi
+      unfunction _active_sdk_version
+      if (( need_sdk )); then
+        sdk env > /dev/null 2>&1   # switch only, no install — fast path
+        [[ -n "$java_ver"   ]] && parts+=("%F{215}$nf_java %F{245}${java_ver%%-*}%f")
+        [[ -n "$maven_ver"  ]] && parts+=("%F{141}$nf_maven %F{245}$maven_ver%f")
+        [[ -n "$tomcat_ver" ]] && parts+=("%F{216}$nf_tomcat %F{245}$tomcat_ver%f")
+      fi
+    fi
+  fi
+
+  # fnm: switch only when the wanted version is installed; otherwise
+  # warn the user (don't auto-install — `fnm install` downloads Node).
+  # `fnm use` fails for a missing version; stdin from /dev/null stops it
+  # from asking to install it instead when attached to a terminal.
+  local node_missing=""
+  if [[ -n "$nvmrc_path" ]]; then
+    local wanted_raw="$(<"${nvmrc_path}")"
+    local before_node="$(fnm current)"
+    if fnm use "$wanted_raw" --silent-if-unchanged --log-level=quiet </dev/null 2>/dev/null; then
+      local after_node="$(fnm current)"
+      [[ "$after_node" != "$before_node" ]] && parts+=("%F{114}$nf_node %F{245}$after_node%f")
+    else
+      node_missing="$wanted_raw"
+    fi
+  elif [[ -n "$(_find_nvmrc "$OLDPWD")" ]]; then
+    # Left a Node project for one that only has .sdkmanrc: back to the default.
+    fnm use default --silent-if-unchanged --log-level=quiet </dev/null 2>/dev/null
+  fi
+
+  # Recorded after switching, so it describes the state this visit leaves.
+  _versions_seen[$PWD]="$sdk_m|$nvm_m|${FNM_MULTISHELL_PATH:A}|$PATH"
+
+  # Pretty one-liner with icons and versions (only for actual switches)
+  if (( ${#parts[@]} > 0 )); then
+    local line=""
+    for part in "${parts[@]}"; do
+      [[ -n "$line" ]] && line+="%F{240} · %f"
+      line+="$part"
+    done
+    print -P "%F{242}╭ Versions switched%f"
+    print -P "%F{242}╰%f $line"
+  fi
+
+  # Warn (don't auto-install) when a requested version is missing.
+  if (( ${#sdk_missing[@]} > 0 )) || [[ -n "$node_missing" ]]; then
+    print -P "%F{215}╭ Versions not installed%f"
+    if (( ${#sdk_missing[@]} > 0 )); then
+      local m miss=""
+      for m in "${sdk_missing[@]}"; do
+        [[ -n "$miss" ]] && miss+="%F{240}, %f"
+        miss+="%F{245}$m%f"
+      done
+      print -P "%F{215}│%f $miss   %F{240}→%f %F{114}sdk env install%f"
+    fi
+    if [[ -n "$node_missing" ]]; then
+      print -P "%F{215}│%f %F{245}node $node_missing%f   %F{240}→%f %F{114}fnm install%f"
+    fi
+    print -P "%F{215}╰%f"
+  fi
+}
+add-zsh-hook chpwd _auto_switch_versions
+
+# Mark a re-check pending when running git commands that can rewrite
+# .sdkmanrc / .nvmrc (checkout, switch, pull, merge, rebase, reset,
+# stash, cherry-pick, restore, am, clone). Matches plain `git …` and
+# common wrappers like `sudo git …`.
+_versions_before_cmd() {
+  case "$1" in
+    *"git checkout"*|*"git switch"*|*"git pull"*|*"git merge"*|*"git rebase"*|*"git reset"*|*"git stash"*|*"git cherry-pick"*|*"git restore"*|*"git am"*|*"git clone"*)
+      _versions_recheck=1
+      ;;
+  esac
+}
+# Cheap fast path: bail immediately unless a git command flagged us.
+_versions_before_prompt() {
+  (( _versions_recheck )) || return
+  _versions_recheck=0
+  _auto_switch_versions
+}
+add-zsh-hook preexec _versions_before_cmd
+add-zsh-hook precmd _versions_before_prompt
+
+_auto_switch_versions
+
+# pnpm
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
+
+# Machine-specific aliases and helpers (work scripts, internal hosts) that stay
+# out of the dotfiles repo.
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

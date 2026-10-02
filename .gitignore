@@ -1,0 +1,6 @@
+# Never commit secrets or machine-local overrides
+.secrets
+secrets
+*.local
+hosts.yml
+.DS_Store

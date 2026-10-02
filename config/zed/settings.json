@@ -1,0 +1,174 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434"
+    }
+  },
+  "base_keymap": "Zed",
+  "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
+    "auto_compact": {
+      "enabled": true,
+      "threshold": "90%",
+    },
+    "commit_message_model": {
+      "model": "gpt-5.5",
+      "provider": "copilot_chat",
+    },
+    "dock": "right",
+    "favorite_models": [],
+    "inline_assistant_model": {
+      "model": "gpt-5.5",
+      "provider": "copilot_chat",
+    },
+    "model_parameters": [],
+    "notify_when_agent_waiting": "primary_screen",
+    "show_turn_stats": true,
+    "single_file_review": true,
+  },
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "allow_rewrap": "anywhere",
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 5000,
+    },
+  },
+  "bottom_dock_layout": "contained",
+  "buffer_font_family": "0xProto Nerd Font Mono",
+  "buffer_font_features": {
+    "calt": true,
+  },
+  "buffer_font_size": 14,
+  "buffer_line_height": "comfortable",
+  "cli_default_open_behavior": "new_window",
+  "collaboration_panel": {
+    "button": false,
+  },
+  "default_open_behavior": "new_window",
+  "diagnostics": {
+    "button": true,
+  },
+  "diff_view_style": "unified",
+  "double_click_in_multibuffer": "open",
+  "edit_predictions": {
+    "provider": "copilot",
+  },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/.sl",
+    "**/.repo",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/target",
+  ],
+  "git": {
+    "inline_blame": {
+      "delay_ms": 500,
+      "enabled": true,
+      "show_commit_summary": true,
+    },
+  },
+  "git_panel": {
+    "dock": "left",
+    "entry_primary_click_action": "project_diff",
+    "file_icons": true,
+    "show_count_badge": false,
+    "status_style": "icon",
+    "tree_view": false,
+  },
+  "helix_mode": false,
+  "icon_theme": {
+    "dark": "Colored Zed Icons Theme Dark",
+    "light": "Colored Zed Icons Theme Light",
+    "mode": "system",
+  },
+  "lsp": {
+    "jdtls": {
+      "settings": {
+        "java_home": "/Users/adolfo/.sdkman/candidates/java/current",
+      },
+    },
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "preview_tabs": {
+    "enabled": true,
+  },
+  "project_panel": {
+    "bold_folder_labels": false,
+    "dock": "left",
+    "git_status_indicator": true,
+    "hide_gitignore": false,
+    "hide_hidden": false,
+    "hide_root": true,
+    "sort_order": "default",
+  },
+  "proxy": "",
+  "search": {
+    "button": true,
+  },
+  "session": {
+    "trust_all_worktrees": true,
+  },
+  "status_bar": {
+    "line_endings_button": false,
+    "show_active_file": true,
+  },
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": true,
+    "show_pinned_tabs_in_separate_row": true,
+    "show_tab_bar_buttons": true,
+  },
+  "tabs": {
+    "close_position": "right",
+    "file_icons": true,
+    "git_status": true,
+    "show_diagnostics": "errors",
+  },
+  "telemetry": {
+    "anthropic_retention": false,
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "terminal": {
+    "copy_on_select": true,
+  },
+  "theme": {
+    "dark": "macOS Classic Dark",
+    "light": "One Light",
+    "mode": "system",
+  },
+  "title_bar": {
+    "show_branch_status_icon": true,
+    "show_menus": false,
+    "show_sign_in": true,
+    "show_user_menu": true,
+  },
+  "ui_font_size": 16,
+  "use_system_window_tabs": true,
+  "which_key": {
+    "enabled": true,
+  },
+}

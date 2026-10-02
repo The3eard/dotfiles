@@ -1,0 +1,225 @@
+# Starship prompt configuration
+# Docs: https://starship.rs/config/
+#
+# Colors are ANSI palette slot NAMES, not hex, so the prompt follows whatever
+# theme the terminal has active and stays readable in light and dark mode.
+# Hardcoded truecolor (the previous Xcode Dark HC hex) ignored the terminal
+# theme entirely: on a light background its colors measured 1.09-2.4:1.
+# Deliberately unused: "white" (slot 7) and "bright-yellow" (slot 11) both
+# measure ~1.9:1 on Catppuccin Latte. Dim text uses "bright-black" (slot 8).
+
+# Da margen al arranque en frío de node/java justo tras un cambio de versión
+# (nvm use / sdkman) al hacer cd. El default de 500ms se queda corto y dispara
+# el warning "Executing command ... timed out".
+# Si aun así salta (exec en frío de node), el warning está silenciado vía
+# STARSHIP_LOG=error en ~/.zshrc §3.6b — no subas más este valor.
+command_timeout = 1000
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$git_metrics\
+$java\
+${custom.tomcat}\
+${custom.maven}\
+$kotlin\
+$nodejs\
+$python\
+$rust\
+$golang\
+$ruby\
+$php\
+$swift\
+$dart\
+$dotnet\
+$elixir\
+$haskell\
+$lua\
+$zig\
+$nim\
+$c\
+$terraform\
+${custom.docker}\
+$aws\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold blue"
+format = "[$path]($style)[$read_only]($read_only_style) "
+read_only = " 󰌾"
+read_only_style = "red"
+
+[git_branch]
+format = "[$symbol$branch(:$remote_branch)]($style) "
+symbol = " "
+style = "bold purple"
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold red"
+stashed = ""
+modified = "~"
+untracked = ""
+
+[git_metrics]
+disabled = false
+format = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
+added_style = "green"
+deleted_style = "red"
+
+[java]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "bright-red"
+version_format = "${major}"
+
+[nodejs]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "green"
+version_format = "${major}.${minor}"
+
+[kotlin]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[python]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "yellow"
+version_format = "${major}.${minor}"
+
+[rust]
+format = "[${symbol}${version}]($style) "
+symbol = "󱘗 "
+style = "bright-red"
+version_format = "${major}.${minor}"
+
+[golang]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "cyan"
+version_format = "${major}.${minor}"
+
+[ruby]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "red"
+version_format = "${major}.${minor}"
+
+[php]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[swift]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "bright-red"
+version_format = "${major}.${minor}"
+
+[dart]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "blue"
+version_format = "${major}.${minor}"
+
+[dotnet]
+format = "[${symbol}${version}]($style) "
+symbol = "󰪮 "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[elixir]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[haskell]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[lua]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "blue"
+version_format = "${major}.${minor}"
+
+[zig]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "bright-red"
+version_format = "${major}.${minor}"
+
+[nim]
+format = "[${symbol}${version}]($style) "
+symbol = "󰆥 "
+style = "yellow"
+version_format = "${major}.${minor}"
+
+[c]
+format = "[${symbol}${version}]($style) "
+symbol = " "
+style = "blue"
+version_format = "${major}.${minor}"
+
+[terraform]
+format = "[${symbol}${version}]($style) "
+symbol = "󱁢 "
+style = "purple"
+version_format = "${major}.${minor}"
+
+[aws]
+format = "[$symbol$profile$region]($style) "
+symbol = " "
+style = "yellow"
+force_display = false
+
+[cmd_duration]
+min_time = 1_000
+format = "[󰔛 ](cyan)[$duration](bright-black) "
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[custom.docker]
+command = "docker ps -q 2>/dev/null | wc -l | tr -d ' '"
+when = "pgrep -qf 'Docker Desktop' && docker ps -q 2>/dev/null | grep -q ."
+format = "[ $output]($style) "
+style = "cyan"
+shell = ["bash", "--norc", "--noprofile"]
+ignore_timeout = true
+
+[custom.maven]
+detect_files = [".sdkmanrc"]
+when = "grep -q '^maven=' .sdkmanrc"
+command = "awk -F= '/^maven=/{print $2}' .sdkmanrc"
+format = "[$symbol$output]($style) "
+symbol = "mvn "
+style = "purple"
+shell = ["bash", "--norc", "--noprofile"]
+ignore_timeout = true
+description = "Maven version from .sdkmanrc"
+
+[custom.tomcat]
+detect_files = [".sdkmanrc"]
+when = "grep -q '^tomcat=' .sdkmanrc"
+command = "awk -F= '/^tomcat=/{print $2}' .sdkmanrc"
+format = "[$symbol$output]($style) "
+symbol = "tomcat "
+style = "yellow"
+shell = ["bash", "--norc", "--noprofile"]
+ignore_timeout = true
+description = "Tomcat version from .sdkmanrc"

@@ -1,0 +1,31 @@
+# A normal colored theme, but with the editor background left transparent
+# so your terminal's own background shows through.
+#
+# The base is base16_terminal, which names ANSI palette slots ("red", "light-blue")
+# instead of hex — so syntax colors follow whatever theme the terminal has active
+# and stay readable in light and dark mode. catppuccin_mocha (the previous base)
+# hardcodes dark truecolor and ignored the terminal theme entirely.
+# Swap the base by changing the theme name on the next line.
+inherits = "base16_terminal"
+
+# Remove the background fill (transparent). Keep everything else from the base theme.
+"ui.background" = {}
+"ui.virtual.whitespace" = {}
+
+# base16_terminal paints its chrome with bg = "black" / bg = "gray" (ANSI slots 0
+# and 7). Those are dark in a light palette, so they render as grey/dark blocks on
+# a light terminal. Drop every fill so the chrome inherits the terminal background,
+# and distinguish these elements by foreground colour instead.
+# "white" is avoided as a foreground for the same reason: it is slot 7, which
+# measures 1.91:1 on Catppuccin Latte.
+"ui.statusline" = { fg = "blue", modifiers = ["bold"] }
+"ui.statusline.inactive" = { fg = "cyan" }
+"ui.linenr" = { fg = "cyan" }
+"ui.linenr.selected" = { fg = "blue", modifiers = ["bold"] }
+"ui.gutter" = {}
+"ui.popup" = {}
+"ui.window" = { fg = "cyan" }
+"ui.help" = {}
+"ui.menu" = {}
+"ui.menu.selected" = { modifiers = ["reversed"] }
+"ui.virtual.ruler" = {}

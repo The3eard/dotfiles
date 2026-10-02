@@ -1,0 +1,38 @@
+# Identity (name, email, signing key) lives in ~/.gitconfig.local, outside the repo.
+[include]
+	path = ~/.gitconfig.local
+[commit]
+	verbose = true
+[branch]
+	sort = -committerdate
+[column]
+	ui = auto
+[tag]
+	sort = -version:refname
+[core]
+	compression = 9
+	whitespace = space-before-tab,indent-with-non-tab,cr-at-eol
+	autocrlf = input
+	editor = hx
+[diff]
+	external = difft
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[maintenance]
+	auto = true
+	strategy = incremental
+[rerere]
+	enabled = true
+	autoUpdate = true
+[help]
+	autocorrect = prompt
+[submodule]
+	recurse = true
+[credential "https://github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !gh auth git-credential

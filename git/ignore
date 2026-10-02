@@ -1,0 +1,16 @@
+**/.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDE
+.idea/
+.vscode/
+.zed/
+*.swp
+*.swo
+*~
+
+# CodeGraph MCP local index
+.codegraph/
