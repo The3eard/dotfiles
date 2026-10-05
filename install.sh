@@ -62,7 +62,7 @@ install_linux_apps() {
 		curl -fsSL https://zed.dev/install.sh | sh
 	fi
 
-	# The official build, not the distro package: kitty.conf needs >= 0.37 (cursor_trail).
+	# The official build, not the distro package, which often lags several releases behind.
 	if ! has kitty && [[ ! -x "$HOME/.local/kitty.app/bin/kitty" ]]; then
 		info "Installing kitty"
 		curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
