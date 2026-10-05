@@ -62,13 +62,15 @@ install_linux_apps() {
 		curl -fsSL https://zed.dev/install.sh | sh
 	fi
 
-	if ! has ghostty; then
-		if has snap; then
-			info "Installing Ghostty (snap)"
-			sudo snap install ghostty --classic
-		else
-			warn "Install Ghostty from https://ghostty.org/docs/install/binary#linux-(official)"
-		fi
+	# The official build, not the distro package: kitty.conf needs >= 0.37 (cursor_trail).
+	if ! has kitty && [[ ! -x "$HOME/.local/kitty.app/bin/kitty" ]]; then
+		info "Installing kitty"
+		curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+		mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications"
+		ln -sf "$HOME/.local/kitty.app/bin/kitty" "$HOME/.local/kitty.app/bin/kitten" "$HOME/.local/bin/"
+		cp "$HOME/.local/kitty.app/share/applications/"kitty*.desktop "$HOME/.local/share/applications/"
+		sed -i -e "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|" \
+			-e "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|" "$HOME/.local/share/applications/"kitty*.desktop
 	fi
 
 	if ! has docker; then
@@ -167,8 +169,9 @@ link_dotfiles() {
 	link git/gitconfig                      "$HOME/.gitconfig"
 	link git/ignore                         "$HOME/.config/git/ignore"
 	link config/starship.toml               "$HOME/.config/starship.toml"
-	link config/ghostty/config              "$HOME/.config/ghostty/config"
-	link config/ghostty/themes              "$HOME/.config/ghostty/themes"
+	link config/kitty/kitty.conf            "$HOME/.config/kitty/kitty.conf"
+	link config/kitty/dark-theme.auto.conf  "$HOME/.config/kitty/dark-theme.auto.conf"
+	link config/kitty/light-theme.auto.conf "$HOME/.config/kitty/light-theme.auto.conf"
 	link config/helix/config.toml           "$HOME/.config/helix/config.toml"
 	link config/helix/themes/transparent.toml "$HOME/.config/helix/themes/transparent.toml"
 	link config/bat/config                  "$HOME/.config/bat/config"

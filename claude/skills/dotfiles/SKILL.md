@@ -1,6 +1,6 @@
 ---
 name: dotfiles
-description: Map and conventions of this macOS/Linux terminal setup (the dotfiles repo). Use when editing ~/.zshrc, shell aliases/functions, starship, Ghostty, Helix, Zed, git, bat or lnav config, helper scripts in ~/.scripts, or SDKMAN/fnm version switching. Triggers: "zshrc", "alias", "dotfiles", "terminal config", "prompt", "ghostty", "helix config", "add a tool to my shell".
+description: Map and conventions of this macOS/Linux terminal setup (the dotfiles repo). Use when editing ~/.zshrc, shell aliases/functions, starship, kitty, Helix, Zed, git, bat or lnav config, helper scripts in ~/.scripts, or SDKMAN/fnm version switching. Triggers: "zshrc", "alias", "dotfiles", "terminal config", "prompt", "kitty", "helix config", "add a tool to my shell".
 ---
 
 # Dotfiles
@@ -28,16 +28,16 @@ When adding a tool, update both its install command in §1 and its config/alias 
 |---|---|---|
 | zsh | `~/.zshrc`, `~/.zshenv`, `~/.profile` | the last two only source `~/.cargo/env` |
 | starship | `~/.config/starship.toml` | Xcode Dark HC palette |
-| Ghostty | `~/.config/ghostty/config` | Catppuccin; sends CSI-u keys (zshrc §5.4.1); custom AAA light themes in `~/.config/ghostty/themes`. Commented lines there are intentional toggles, not dead code |
+| kitty | `~/.config/kitty/kitty.conf` | `splits` layout, `cmd` keybindings; `dark-theme.auto.conf` (GitHub Dark) and `light-theme.auto.conf` follow the OS appearance. Most of `kitty.conf` is the stock commented reference |
 | git | `~/.gitconfig`, `~/.config/git/ignore` | difftastic as difftool; `gh` as credential helper |
 | bat | `~/.config/bat/` + `BAT_THEME` | Catppuccin Mocha |
 | Helix (`hx`) | `~/.config/helix/config.toml` + themes | `$EDITOR`; aliased as `vi`/`vim`/`editor`. Neovim is gone |
 | Zed | `~/.config/zed/` | `$VISUAL="zed --wait"`; CLI symlinked at `~/.local/bin/zed` → `/Applications/Zed.app/Contents/MacOS/cli` |
 | lnav | `~/.config/lnav/` | |
-| ssh | `~/.ssh/config` | `SetEnv TERM=xterm-256color` for all hosts: remotes lack Ghostty's terminfo |
+| ssh | `~/.ssh/config` | `SetEnv TERM=xterm-256color` for all hosts: remotes lack kitty's terminfo |
 | gh / glab | `~/.config/gh/`, `~/.config/glab-cli/` | |
 
-Terminal tool colours reference ANSI slots, never hex, so they follow the Ghostty theme; never slots 7/11 for text.
+Terminal tool colours reference ANSI slots, never hex, so they follow the kitty theme; never slots 7/11 for text.
 
 ## Helper scripts (`~/.scripts/`)
 

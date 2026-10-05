@@ -1,7 +1,7 @@
 --style=plain
 
 # "ansi" makes bat render syntax highlighting through the terminal's own 16 ANSI
-# slots instead of a built-in truecolor theme, so it inherits the Ghostty theme in
+# slots instead of a built-in truecolor theme, so it inherits the kitty theme in
 # both light and dark mode with no appearance detection.
 # Tradeoff: 16 colors is coarser than a truecolor theme like OneHalfDark. To go
 # back to per-appearance truecolor themes, replace the line below with:

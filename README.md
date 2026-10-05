@@ -1,6 +1,6 @@
 # dotfiles
 
-Terminal and editor setup for macOS and Linux: zsh (no framework), starship, Ghostty, Helix, Zed, git, bat, fzf, gh and glab.
+Terminal and editor setup for macOS and Linux: zsh (no framework), starship, kitty, Helix, Zed, git, bat, fzf, gh and glab.
 
 ## Install
 
@@ -17,7 +17,7 @@ cd ~/Projects/dotfiles
 |---|---|---|
 | Base | Xcode Command Line Tools | build tools, zsh, flatpak |
 | CLI tools | `brew bundle` (Brewfile) | same Brewfile via Homebrew on Linux |
-| Apps | casks in the Brewfile | Zed (official script), Ghostty (snap), Docker Engine, 0xProto Nerd Font, flatpaks |
+| Apps | casks in the Brewfile | Zed and kitty (official scripts), Docker Engine, 0xProto Nerd Font, flatpaks |
 | Toolchains | SDKMAN (Java/Maven/Tomcat), fnm + Node LTS, rustup, Claude Code | same |
 
 ## Layout
@@ -75,7 +75,7 @@ These files are symlinks into the repo, so changing them shows up in `git status
 
 ### Linux differences
 
-- **Ghostty:** the `macos-*` options are ignored, and the `global:` keybind (quick terminal on `super+grave`) is macOS only; bind it in your desktop environment instead. If `snap` is missing, install Ghostty by hand from its docs.
+- **kitty:** the `macos_*` options are ignored, `cmd` in the keybindings is the Super key, and `background_blur` only works on KDE. It lives in `~/.local/kitty.app`, linked into `~/.local/bin`.
 - **Docker:** log out and back in after the first install so the `docker` group applies.
 - **Starship:** the Docker module looks for the Docker Desktop process, so it stays hidden with Docker Engine.
 - **Desktop apps:** they come from Flathub; the macOS-only ones (Maccy, MiddleClick, OnyX, AWS VPN Client) have no Linux equivalent installed.
