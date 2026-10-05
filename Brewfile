@@ -54,7 +54,7 @@ brew "agent-browser"
 # ── macOS apps ───────────────────────────────────────────────────────────────
 if OS.mac?
   cask "font-0xproto-nerd-font"
-  cask "ghostty"
+  cask "kitty"
   cask "zed"
   cask "docker-desktop"
   cask "1password"

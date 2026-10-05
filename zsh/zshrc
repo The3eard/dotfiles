@@ -54,7 +54,7 @@
 #   curl -s "https://get.sdkman.io" | bash         # Java/Tomcat version manager
 #   brew install awscli                            # AWS CLI (completion in 2.3 + 'creds' alias)
 #   brew install --cask docker                     # Docker Desktop
-#   brew install --cask ghostty                    # terminal (CSI u keybinds in 5.4.1)
+#   brew install --cask kitty                      # terminal
 #   brew install --cask zed                         # GUI editor ($VISUAL)
 #     then symlink its CLI onto PATH so `zed`/`zed --wait` work:
 #       ln -sf "/Applications/Zed.app/Contents/MacOS/cli" ~/.local/bin/zed
@@ -277,12 +277,12 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 # ── 5.2 Appearance (follows the terminal theme) ───────────────────────────────
 # ANSI slot numbers and -1, not hex: -1 means "terminal default", so the picker
 # inherits the terminal background instead of painting its own, and follows the
-# Ghostty theme in both modes. Previously this hardcoded Catppuccin Mocha hex
+# kitty theme in both modes. Previously this hardcoded Catppuccin Mocha hex
 # including bg:#101010, which stayed a dark box inside a light terminal.
 #   bg+ keeps a real slot (8) — as a background band a low ratio is what you want,
 #   and -1 there would leave the selected row with no highlight at all.
 #   border uses -1 rather than a slot: no slot is mid-tone in both modes (slot 8
-#   is 1.77:1 on Apple System Colors dark, slot 7 is 2.87:1 on its Light variant).
+#   is 7.31:1 on the light theme, slot 7 is 1.46:1 on it and 9.63:1 on the dark one).
 export FZF_DEFAULT_OPTS='
   --height=60%
   --layout=reverse
@@ -307,12 +307,6 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --icons --level=2 --color=always {}
 
 # ── 5.4 Load fzf key bindings and completions ────────────────────────────────
 source <(fzf --zsh)
-
-# ── 5.4.1 CSI u (kitty protocol) keybindings for Ghostty ────────────────────
-# Ghostty sends CSI u sequences (e.g. \e[114;5u for Ctrl+R) instead of classic
-# control codes. Bind these so fzf and other widgets work correctly.
-bindkey '\e[114;5u' fzf-history-widget    # Ctrl+R → fzf history
-bindkey '\e[116;5u' fzf-file-widget       # Ctrl+T → fzf file finder
 
 # ── 5.5 Interactive finder functions ──────────────────────────────────────────
 
