@@ -182,6 +182,7 @@ link_dotfiles() {
 	link scripts/aws-sso-login.sh           "$HOME/.scripts/aws-sso-login.sh"
 	link claude/CLAUDE.md                   "$HOME/.claude/CLAUDE.md"
 	link claude/statusline-command.sh       "$HOME/.claude/statusline-command.sh"
+	link claude/hooks/codegraph-worktree-seed.sh "$HOME/.claude/hooks/codegraph-worktree-seed.sh"
 	link claude/skills/dotfiles             "$HOME/.claude/skills/dotfiles"
 	local agent
 	for agent in "$DOTFILES"/claude/agents/*.md; do
