@@ -26,7 +26,7 @@ cd ~/Projects/dotfiles
 zsh/        zshrc, zshenv, profile and the vendored sudo plugin
 git/        gitconfig and global ignore
 config/     everything that lives in ~/.config
-claude/     Claude Code: CLAUDE.md, agent team, status line, dotfiles skill, settings
+claude/     Claude Code: CLAUDE.md, agent team, status line, hooks, dotfiles skill, settings
 scripts/    helpers linked into ~/.scripts
 Brewfile    packages for both systems
 ```

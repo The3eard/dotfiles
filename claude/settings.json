@@ -22,8 +22,6 @@
       "WebSearch",
       "Skill",
       "mcp__codegraph__*",
-      "mcp__mysql__*",
-      "mcp__aws-api__*",
       "mcp__plugin_slack_slack__*",
       "mcp__plugin_context7_context7__*",
       "mcp__plugin_engineering_atlassian__*",
