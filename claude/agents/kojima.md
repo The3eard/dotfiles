@@ -47,7 +47,7 @@ gitlab:
 
 | Agent | Use for |
 |---|---|
-| `neo` | Code exploration: codegraph, grep, reads; flows, callers, impact. Several in parallel on different areas. |
+| `neo` | Code exploration: graphify, grep, reads; flows, callers, impact. Several in parallel on different areas. |
 | `hermione` | Library, framework and external API docs, version-aware and cited. |
 | `shikamaru` | Spec and deliverable subplans (SP, files, dependencies). Writes the spec file. |
 | `smithers` | Jira and Confluence: reads, drafts, publishes after approval, transitions. |

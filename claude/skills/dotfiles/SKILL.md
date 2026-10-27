@@ -47,7 +47,7 @@ Machine-specific aliases and scripts (work tools, internal hosts) live in `~/.zs
 
 ## Toolchain managers
 
-- **fnm** (`~/.local/share/fnm`): Node, driven by `.nvmrc`. Global npm packages are per version. Anything that needs a stable Node path outside the shell (e.g. the `codegraph` MCP server in `~/.claude.json`) uses `~/.local/share/fnm/aliases/default/`, not a versioned path.
+- **fnm** (`~/.local/share/fnm`): Node, driven by `.nvmrc`. Global npm packages are per version. Anything that needs a stable Node path outside the shell uses `~/.local/share/fnm/aliases/default/`, not a versioned path.
 - **SDKMAN** (`~/.sdkman`): Java / Maven / Tomcat, driven by `.sdkmanrc`. `JAVA_HOME` and `CATALINA_HOME` point at its `current` symlinks.
 
 `~/Projects/` holds the projects; the auto-switch hook is scoped to `~/Projects/*`.

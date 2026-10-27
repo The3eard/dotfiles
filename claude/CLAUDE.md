@@ -20,13 +20,12 @@ Documentation is proportional to complexity. Document the contract and the *why*
 
 When I ask for a **workflow**, pick models by complexity instead of one default: orchestration on **fable** for complex tasks, **opus** for simpler ones; agents inside on **haiku** (mechanical), **sonnet** (intermediate) or **opus** (heavy reasoning, synthesis, critical verification). Classify each phase before writing the script and set `model` per `agent()`.
 
-<!-- CODEGRAPH_START -->
-## CodeGraph
+## graphify
 
-In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+In repositories with a graphify knowledge graph (`graphify-out/graph.json` at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code, and put this rule in every subagent prompt that explores code:
 
-- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
-- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
+- `graphify query "<question>"` for a scoped subgraph, `graphify path "<A>" "<B>"` for how two symbols connect, `graphify explain "<symbol>"` for one symbol and its neighbours, `graphify affected "<symbol>"` for blast radius. Read raw files only for the lines the graph already located.
+- `graphify-out/GRAPH_REPORT.md` only for broad architecture review, when query/path/explain don't surface enough.
+- After modifying code, or in a worktree whose graph came from another branch, run `graphify update .` (AST only, no API cost).
 
-If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
-<!-- CODEGRAPH_END -->
+If there is no `graphify-out/`, skip graphify entirely — indexing is the user's decision. `/graphify` (the skill) builds or rebuilds a graph.
