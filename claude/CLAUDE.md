@@ -20,6 +20,10 @@ Documentation is proportional to complexity. Document the contract and the *why*
 
 When I ask for a **workflow**, pick models by complexity instead of one default: orchestration on **fable** for complex tasks, **opus** for simpler ones; agents inside on **haiku** (mechanical), **sonnet** (intermediate) or **opus** (heavy reasoning, synthesis, critical verification). Classify each phase before writing the script and set `model` per `agent()`.
 
+## Terminal
+
+I work in kitty with remote control on. When something reads better beside the chat than in it (a diff before a push, a directory or worktree to look at, live logs, another window's output), use the `kitty` skill.
+
 ## graphify
 
 In repositories with a graphify knowledge graph (`graphify-out/graph.json` at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code, and put this rule in every subagent prompt that explores code:

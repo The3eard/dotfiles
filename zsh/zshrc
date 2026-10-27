@@ -255,8 +255,6 @@ alias sizeof='du -sh'                     # show size of file/dir (usage: sizeof
 alias creds='~/.scripts/aws-sso-login.sh' # refresh AWS SSO credentials
 
 # ── 4.7 Claude ───────────────────────────────────────────────────────────
-alias ck='claude --agent kojima'          # launch Claude Code with the kojima orchestrator (~/.claude/agents)
-alias cky='claude --agent kojima --dangerously-skip-permissions' # kojima orchestrator with all permissions
 alias cc='claude'
 alias ccy='claude --dangerously-skip-permissions'  # plain Claude Code with all permissions
 
