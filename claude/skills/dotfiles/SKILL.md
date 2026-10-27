@@ -28,7 +28,7 @@ When adding a tool, update both its install command in §1 and its config/alias 
 |---|---|---|
 | zsh | `~/.zshrc`, `~/.zshenv`, `~/.profile` | the last two only source `~/.cargo/env` |
 | starship | `~/.config/starship.toml` | Xcode Dark HC palette |
-| kitty | `~/.config/kitty/kitty.conf` | `splits` layout, `cmd` keybindings; `dark-theme.auto.conf` (GitHub Dark) and `light-theme.auto.conf` follow the OS appearance. Most of `kitty.conf` is the stock commented reference |
+| kitty | `~/.config/kitty/kitty.conf` | `splits` layout, `cmd` keybindings; `dark-theme.auto.conf` (GitHub Dark) and `light-theme.auto.conf` follow the OS appearance. Remote control is socket-only on `unix:/tmp/kitty-{kitty_pid}` (used by the `kitty` skill; `listen_on` changes need a restart). Most of `kitty.conf` is the stock commented reference |
 | git | `~/.gitconfig`, `~/.config/git/ignore` | difftastic as difftool; `gh` as credential helper |
 | bat | `~/.config/bat/` + `BAT_THEME` | Catppuccin Mocha |
 | Helix (`hx`) | `~/.config/helix/config.toml` + themes | `$EDITOR`; aliased as `vi`/`vim`/`editor`. Neovim is gone |

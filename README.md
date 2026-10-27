@@ -26,7 +26,7 @@ cd ~/Projects/dotfiles
 zsh/        zshrc, zshenv, profile and the vendored sudo plugin
 git/        gitconfig and global ignore
 config/     everything that lives in ~/.config
-claude/     Claude Code: CLAUDE.md, agent team, status line, hooks, dotfiles skill, settings
+claude/     Claude Code: CLAUDE.md, agents and their skills, status line, settings
 scripts/    helpers linked into ~/.scripts
 Brewfile    packages for both systems
 ```
@@ -50,7 +50,6 @@ Things `install.sh` cannot decide for you. None of them is a bug; each is a valu
 | `~/.secrets` | API keys and tokens (see [`secrets.example`](secrets.example)). `creds` needs the `AWS_SSO_*` variables; zsh-ai needs `GEMINI_API_KEY`. |
 | `~/.gitconfig.local` | `user.name` and `user.email` (and a signing key if you use one). |
 | `~/.zshrc.local` | Optional: aliases and helpers that only make sense on that machine. |
-| `~/.claude/user-profile.yaml` | Created by the `kojima` agent on its first run: name, language, Jira site/project, GitLab host and ids. |
 
 ### Logins
 
@@ -71,7 +70,7 @@ These files are symlinks into the repo, so changing them shows up in `git status
 
 ### Copied once, then yours
 
-- **`~/.claude/settings.json`** is copied only when it does not exist, because Claude Code rewrites it from `/config`. Review `attribution` (the email used in commits and PRs) and `permissions.allow` (add the MCP servers you use on that machine).
+- **`~/.claude/settings.json`** is copied only when it does not exist, because Claude Code rewrites it from `/config`. Add `attribution` if you want an `Authored-by` trailer in commits and PRs, and review `permissions.allow` (add the MCP servers you use on that machine).
 
 ### Linux differences
 

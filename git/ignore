@@ -14,3 +14,5 @@ Thumbs.db
 
 # graphify local knowledge graph
 graphify-out/
+
+**/.claude/.cc-writes/
