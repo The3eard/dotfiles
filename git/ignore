@@ -12,5 +12,5 @@ Thumbs.db
 *.swo
 *~
 
-# CodeGraph MCP local index
-.codegraph/
+# graphify local knowledge graph
+graphify-out/

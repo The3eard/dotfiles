@@ -116,7 +116,7 @@ install_toolchains() {
 	fi
 	eval "$(fnm env --shell bash)"
 	fnm use default >/dev/null
-	has codegraph || npm install -g @colbymchenry/codegraph
+	has graphify || { uv tool install "graphifyy[mcp]" && "$HOME/.local/bin/graphify" install --platform claude; }
 
 	if [[ ! -x "$HOME/.cargo/bin/rustup" ]]; then
 		info "Installing Rust (rustup)"
@@ -127,10 +127,6 @@ install_toolchains() {
 		info "Installing Claude Code"
 		curl -fsSL https://claude.ai/install.sh | bash
 	fi
-	local claude_bin
-	claude_bin="$(command -v claude || echo "$HOME/.local/bin/claude")"
-	"$claude_bin" mcp get codegraph >/dev/null 2>&1 ||
-		"$claude_bin" mcp add --scope user codegraph -- codegraph serve --mcp
 }
 
 set_default_shell() {
@@ -182,7 +178,6 @@ link_dotfiles() {
 	link scripts/aws-sso-login.sh           "$HOME/.scripts/aws-sso-login.sh"
 	link claude/CLAUDE.md                   "$HOME/.claude/CLAUDE.md"
 	link claude/statusline-command.sh       "$HOME/.claude/statusline-command.sh"
-	link claude/hooks/codegraph-worktree-seed.sh "$HOME/.claude/hooks/codegraph-worktree-seed.sh"
 	link claude/skills/dotfiles             "$HOME/.claude/skills/dotfiles"
 	local agent
 	for agent in "$DOTFILES"/claude/agents/*.md; do

@@ -25,14 +25,14 @@ The goal (ticket, spec path), the scope (branch, base branch, MR, changed files)
 - Resources: leaked connections, streams or clients; unbounded memory or queues; pagination that never ends; N+1 queries; external calls without timeouts.
 - Errors: swallowed exceptions, wrong status codes, retries that amplify load.
 - Data: migration order and locks on big tables, backfills, schema and query mismatches, index use.
-- Compatibility: contract changes, serialization, callers not updated (`codegraph_callers`, `codegraph_impact`).
+- Compatibility: contract changes, serialization, callers not updated (`graphify affected`).
 - Tests: do they exercise the behavior or pass vacuously? Does the bug's test fail without the fix?
 
 The invariants in the repo's CLAUDE.md files, nested ones included, are part of the checklist.
 
 ## Verification powers, read-only
 
-Use actively: compile and run tests (artifacts under `target/` or equivalent are fine), codegraph for structural claims (`codegraph sync .` first in a worktree), read-only database queries (SELECT and EXPLAIN only), log and metrics skills when the session has them, read-only git, and `neo` for exploration.
+Use actively: compile and run tests (artifacts under `target/` or equivalent are fine), graphify for structural claims (`graphify update .` first in a worktree), read-only database queries (SELECT and EXPLAIN only), log and metrics skills when the session has them, read-only git, and `neo` for exploration.
 
 Forbidden: editing files (don't get around your blocked edit tools with Bash redirects, `sed -i`, `tee` or patches), mutating git (commit, checkout, reset, stash, merge, rebase, push, tag), database writes, deploys, restarts, posting anywhere. You propose fixes; others apply them.
 

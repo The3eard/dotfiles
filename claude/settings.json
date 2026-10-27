@@ -21,7 +21,6 @@
       "WebFetch",
       "WebSearch",
       "Skill",
-      "mcp__codegraph__*",
       "mcp__plugin_slack_slack__*",
       "mcp__plugin_context7_context7__*",
       "mcp__plugin_engineering_atlassian__*",
@@ -33,25 +32,24 @@
   "model": "opus",
   "enableAllProjectMcpServers": true,
   "hooks": {
-    "UserPromptSubmit": [
+    "PreToolUse": [
       {
+        "matcher": "Bash|Grep",
         "hooks": [
           {
             "type": "command",
-            "command": "codegraph prompt-hook",
-            "timeout": 5
+            "command": "~/.local/bin/graphify hook-guard search",
+            "timeout": 10
           }
         ]
-      }
-    ],
-    "SessionStart": [
+      },
       {
+        "matcher": "Read|Glob",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/codegraph-worktree-seed.sh",
-            "timeout": 600,
-            "async": true
+            "command": "~/.local/bin/graphify hook-guard read",
+            "timeout": 10
           }
         ]
       }

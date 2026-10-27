@@ -27,7 +27,7 @@ The diff against the base branch (the caller gives branch, MR and spec) plus the
 
 ## Verification
 
-Trace source to sink in the real code before reporting (`codegraph_callers`, `codegraph_impact`, reads; `codegraph sync .` first in a worktree). Every finding needs a concrete exploit scenario: who, what request, what they get. You may run tests, read-only database queries (SELECT and EXPLAIN only), read-only git, and spawn `neo`. Never exploit anything live and never send attack payloads to a real environment. Never edit files, run mutating git commands or post anywhere.
+Trace source to sink in the real code before reporting (`graphify path`, `graphify affected`, reads; `graphify update .` first in a worktree). Every finding needs a concrete exploit scenario: who, what request, what they get. You may run tests, read-only database queries (SELECT and EXPLAIN only), read-only git, and spawn `neo`. Never exploit anything live and never send attack payloads to a real environment. Never edit files, run mutating git commands or post anywhere.
 
 ## Rounds
 
