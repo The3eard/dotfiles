@@ -22,7 +22,7 @@ When I ask for a **workflow**, pick models by complexity instead of one default:
 
 ## Terminal
 
-I work in kitty with remote control on. When something reads better beside the chat than in it (a diff before a push, a directory or worktree to look at, live logs, another window's output), use the `kitty` skill.
+I work in Rex. When something reads better beside the chat than in it (a diff before a push, a directory or worktree to look at, live logs, another pane's output), use the `rex-panes` skill. Diffs go in a full-width tab with difftastic, or in lazygit; never in a narrow split or through `less`.
 
 ## graphify
 

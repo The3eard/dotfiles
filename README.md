@@ -1,6 +1,6 @@
 # dotfiles
 
-Terminal and editor setup for macOS and Linux: zsh (no framework), starship, kitty, Helix, Zed, git, bat, fzf, gh and glab.
+Terminal and editor setup for macOS and Linux: zsh (no framework), starship, kitty (Linux), Helix, Zed, git, bat, fzf, gh and glab.
 
 ## Install
 

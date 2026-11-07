@@ -54,7 +54,6 @@
 #   curl -s "https://get.sdkman.io" | bash         # Java/Tomcat version manager
 #   brew install awscli                            # AWS CLI (completion in 2.3 + 'creds' alias)
 #   brew install --cask docker                     # Docker Desktop
-#   brew install --cask kitty                      # terminal
 #   brew install --cask zed                         # GUI editor ($VISUAL)
 #     then symlink its CLI onto PATH so `zed`/`zed --wait` work:
 #       ln -sf "/Applications/Zed.app/Contents/MacOS/cli" ~/.local/bin/zed
@@ -275,7 +274,7 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 # ── 5.2 Appearance (follows the terminal theme) ───────────────────────────────
 # ANSI slot numbers and -1, not hex: -1 means "terminal default", so the picker
 # inherits the terminal background instead of painting its own, and follows the
-# kitty theme in both modes. Previously this hardcoded Catppuccin Mocha hex
+# terminal theme in both modes. Previously this hardcoded Catppuccin Mocha hex
 # including bg:#101010, which stayed a dark box inside a light terminal.
 #   bg+ keeps a real slot (8) — as a background band a low ratio is what you want,
 #   and -1 there would leave the selected row with no highlight at all.

@@ -165,9 +165,11 @@ link_dotfiles() {
 	link git/gitconfig                      "$HOME/.gitconfig"
 	link git/ignore                         "$HOME/.config/git/ignore"
 	link config/starship.toml               "$HOME/.config/starship.toml"
-	link config/kitty/kitty.conf            "$HOME/.config/kitty/kitty.conf"
-	link config/kitty/dark-theme.auto.conf  "$HOME/.config/kitty/dark-theme.auto.conf"
-	link config/kitty/light-theme.auto.conf "$HOME/.config/kitty/light-theme.auto.conf"
+	if [[ "$OS" == Linux ]]; then
+		link config/kitty/kitty.conf            "$HOME/.config/kitty/kitty.conf"
+		link config/kitty/dark-theme.auto.conf  "$HOME/.config/kitty/dark-theme.auto.conf"
+		link config/kitty/light-theme.auto.conf "$HOME/.config/kitty/light-theme.auto.conf"
+	fi
 	link config/helix/config.toml           "$HOME/.config/helix/config.toml"
 	link config/helix/themes/transparent.toml "$HOME/.config/helix/themes/transparent.toml"
 	link config/bat/config                  "$HOME/.config/bat/config"
