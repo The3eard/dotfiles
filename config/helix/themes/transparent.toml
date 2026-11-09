@@ -20,6 +20,12 @@ inherits = "base16_terminal"
 # measures 1.91:1 on Catppuccin Latte.
 "ui.statusline" = { fg = "blue", modifiers = ["bold"] }
 "ui.statusline.inactive" = { fg = "cyan" }
+# Mode block as a solid pill: reversed puts the terminal background behind the
+# text, so it stays readable in light and dark palettes.
+"ui.statusline.normal" = { fg = "blue", modifiers = ["reversed", "bold"] }
+"ui.statusline.insert" = { fg = "green", modifiers = ["reversed", "bold"] }
+"ui.statusline.select" = { fg = "magenta", modifiers = ["reversed", "bold"] }
+"ui.statusline.separator" = { fg = "cyan" }
 "ui.linenr" = { fg = "cyan" }
 "ui.linenr.selected" = { fg = "blue", modifiers = ["bold"] }
 "ui.gutter" = {}
