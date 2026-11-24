@@ -180,13 +180,10 @@ link_dotfiles() {
 	link scripts/aws-sso-login.sh           "$HOME/.scripts/aws-sso-login.sh"
 	link claude/CLAUDE.md                   "$HOME/.claude/CLAUDE.md"
 	link claude/statusline-command.sh       "$HOME/.claude/statusline-command.sh"
-	local agent skill
+	local skill
 	for skill in "$DOTFILES"/claude/skills/*/; do
 		skill="$(basename "$skill")"
 		link "claude/skills/$skill" "$HOME/.claude/skills/$skill"
-	done
-	for agent in "$DOTFILES"/claude/agents/*.md; do
-		link "claude/agents/$(basename "$agent")" "$HOME/.claude/agents/$(basename "$agent")"
 	done
 
 	# Claude Code rewrites settings.json from /config, so it is a starting copy, not a link.
