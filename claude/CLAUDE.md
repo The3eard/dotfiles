@@ -16,10 +16,6 @@ Documentation is proportional to complexity. Document the contract and the *why*
 - Load-bearing invariants (ordering, locking, security) are the exception to brevity and the legitimate place for a ticket reference.
 - REST controllers: the description lives in the OpenAPI annotations; a Javadoc that repeats `@Operation` is redundant. `@ApiResponse` only for codes a client must handle. On DTOs, `@Schema(description, example, requiredMode)` is worth it: it is the public contract.
 
-## Workflow model tiers
-
-When I ask for a **workflow**, pick models by complexity instead of one default: orchestration on **fable** for complex tasks, **opus** for simpler ones; agents inside on **haiku** (mechanical), **sonnet** (intermediate) or **opus** (heavy reasoning, synthesis, critical verification). Classify each phase before writing the script and set `model` per `agent()`.
-
 ## Terminal
 
 I work in kitty. When something reads better beside the chat than in it (a diff before a push, a directory or worktree to look at, live logs, another pane's output), use the `kitty-panes` skill. Diffs go in a full-width tab with delta, or in lazygit; never in a narrow split or through `less`.
