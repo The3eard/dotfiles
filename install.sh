@@ -178,6 +178,7 @@ link_dotfiles() {
 	link config/gh/config.yml               "$HOME/.config/gh/config.yml"
 	link config/glab-cli/aliases.yml        "$HOME/.config/glab-cli/aliases.yml"
 	link scripts/aws-sso-login.sh           "$HOME/.scripts/aws-sso-login.sh"
+	link scripts/jdtls                      "$HOME/.local/bin/jdtls"
 	link claude/CLAUDE.md                   "$HOME/.claude/CLAUDE.md"
 	link claude/statusline-command.sh       "$HOME/.claude/statusline-command.sh"
 	local skill

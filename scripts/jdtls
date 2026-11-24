@@ -1,0 +1,4 @@
+#!/bin/sh
+# Runs Homebrew's jdtls on the formula's own openjdk: a jdtls upgrade can require a
+# newer Java than SDKMAN's JAVA_HOME and then exits 13; that openjdk upgrades with it.
+JAVA_HOME=/opt/homebrew/opt/openjdk exec /opt/homebrew/bin/jdtls "$@"
