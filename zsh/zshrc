@@ -238,7 +238,17 @@ alias q='exit'                            # quick exit
 alias reload='source ~/.zshrc'            # reload this config without restarting
 alias help='tldr'                         # quick cheatsheets (usage: help tar)
 alias grep='grep --color=auto --exclude-dir={.git,.idea}'  # coloured matches, skip VCS/IDE dirs
-alias update='brew update && brew upgrade --greedy && brew autoremove'  # update all Homebrew packages
+# update: upgrade every Homebrew package (self-updating casks too), then drop
+# orphaned dependencies, old versions and the whole download cache.
+# update -n: only list what is outdated, with installed and latest versions.
+update() {
+  brew update || return
+  if [[ $1 == -n ]]; then
+    brew outdated --greedy --verbose
+    return
+  fi
+  brew upgrade --greedy && brew autoremove && brew cleanup --prune=all
+}
 
 # ── 4.5 Network & system info ────────────────────────────────────────────────
 alias ports='lsof -iTCP -sTCP:LISTEN -nP' # list all listening TCP ports
