@@ -169,6 +169,11 @@ link_dotfiles() {
 		link config/kitty/kitty.conf            "$HOME/.config/kitty/kitty.conf"
 		link config/kitty/dark-theme.auto.conf  "$HOME/.config/kitty/dark-theme.auto.conf"
 		link config/kitty/light-theme.auto.conf "$HOME/.config/kitty/light-theme.auto.conf"
+	else
+		link config/kitty/macos/kitty.conf            "$HOME/.config/kitty/kitty.conf"
+		link config/kitty/macos/tab_bar.py            "$HOME/.config/kitty/tab_bar.py"
+		link config/kitty/macos/dark-theme.auto.conf  "$HOME/.config/kitty/dark-theme.auto.conf"
+		link config/kitty/macos/light-theme.auto.conf "$HOME/.config/kitty/light-theme.auto.conf"
 	fi
 	link config/helix/config.toml           "$HOME/.config/helix/config.toml"
 	link config/helix/themes/transparent.toml "$HOME/.config/helix/themes/transparent.toml"
